@@ -24,8 +24,14 @@ for file in os.listdir(filepath):
 
 # -- INITIAL encryption of these images using AES, making sure they remained paired with their MD5 checksums
 image_hashes = []
-key = get_random_bytes(16) # TODO: make one permanent key that is on both sides. keep with ciphertext, nonce, tag
+# Fetch key from file, set up cipher
+with open("./key.txt", 'r') as file:
+    key_line = file.readline().strip()
+    print(key_line)
+    key = bytes.fromhex(key_line)
+    print(key)
 cipher = AES.new(key, AES.MODE_CBC)
+# for each image, encrypt it, and add to image_hashes list WITH the previously generated md5
 for image_entry in image_md5s:
     image_byte_array = io.BytesIO()
     image_entry[1].save(image_byte_array, format=image_entry[1].format)
@@ -35,4 +41,4 @@ for image_entry in image_md5s:
     ciphertext = b64encode(ciphertext).decode('utf-8')
     #ciphertext, tag = cipher.encrypt_and_digest(image_entry[1]) # TODO: use a specific encryption for images
     result = json.dumps({ "iv": iv, "ciphertext": ciphertext })
-    image_hashes.append([image_entry[0], result, image_entry[2]])
+    image_hashes.append([image_entry[0], result, image_entry[2]]) # file path, iv/cihpertext, md5hash
