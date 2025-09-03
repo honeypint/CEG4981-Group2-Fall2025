@@ -32,6 +32,7 @@ with open("./key.txt", 'r') as file:
     print(key)
 cipher = AES.new(key, AES.MODE_CBC)
 # for each image, encrypt it, and add to image_hashes list WITH the previously generated md5
+# TODO: clean this section up a bit
 for image_entry in image_md5s:
     image_byte_array = io.BytesIO()
     image_entry[1].save(image_byte_array, format=image_entry[1].format)
@@ -39,6 +40,10 @@ for image_entry in image_md5s:
     ciphertext = cipher.encrypt = (pad(image_bytes, AES.block_size))
     iv = b64encode(cipher.iv).decode('utf-8')
     ciphertext = b64encode(ciphertext).decode('utf-8')
-    #ciphertext, tag = cipher.encrypt_and_digest(image_entry[1]) # TODO: use a specific encryption for images
     result = json.dumps({ "iv": iv, "ciphertext": ciphertext })
-    image_hashes.append([image_entry[0], result, image_entry[2]]) # file path, iv/cihpertext, md5hash
+    image_hashes.append([image_entry[0], result, image_entry[2]]) # file path, iv/ciphertext, md5hash
+
+# -- Add image hashes + IVs + md5hash to a separate text file which will be worked with for the data transfer
+with open("./image_hashes.txt", 'w') as file:
+    for image in image_hashes:
+        file.write(image[1]+" "+image[2]+'\n')
