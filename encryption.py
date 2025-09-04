@@ -42,16 +42,12 @@ for image_entry in image_md5s:
     ciphertext, tag = cipher.encrypt_and_digest(image_bytes_string)
     
     result = [b64encode(ciphertext).decode('utf-8'), b64encode(tag).decode('utf-8'), b64encode(nonce).decode('utf-8')]
-    #ciphertext = cipher.encrypt = (pad(image_bytes, AES.block_size))
-    #iv = b64encode(cipher.iv).decode('utf-8')
-    #ciphertext = b64encode(ciphertext).decode('utf-8')
-    #result = json.dumps({ "iv": iv, "ciphertext": ciphertext })
-    image_hashes.append([image_entry[0], result, image_entry[2]]) # file path, iv/ciphertext, md5hash
+    image_hashes.append([image_entry[2], result]) # md5hash, ciphertext, tag, nonce
 
-# -- Add image hashes + IVs + md5hash to a separate text file which will be worked with for the data transfer
+# -- Add md5hash+result triad to a separate text file which will be worked with for the data transfer
 with open("./image_hashes.txt", 'w') as file:
     for image in image_hashes:
         file.write(image[0]+" ")
         for item in image[1]:
             file.write(item+" ")
-        file.write(image[2]+'\n')
+        file.write("\n")
