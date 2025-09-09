@@ -1,19 +1,24 @@
-import hashlib
+import hashlib # hashlib for MD5
 import io # Used for converting image to bytes
+
+from base64 import b64decode # b64decode function
 from PIL import Image # Python Imaging Library
 from Crypto.Cipher import AES # pycrypto AES-128
 from Crypto.Random import get_random_bytes # random bytes
-from base64 import b64decode # b64decode function
 from Crypto.Util.Padding import pad # pad function
 
+SOURCE_FILE = "./image_hashes.txt"
+KEY_FILE = "./key.txt"
+RESULT_DIR = "./Decrypted Images"
+
 # -- Fetch key from a file; the same key used for encryption
-with open("./key.txt", 'r') as file:
+with open(KEY_FILE, 'r') as file:
     key_line = file.readline().strip()
     key = bytes.fromhex(key_line)
 
 # TODO: change file name as needed further down the process
 # -- Iterate through the hashes file, process each image individually
-with open('image_hashes.txt', 'r') as file:
+with open(SOURCE_FILE, 'r') as file:
     i = 0
     for line in file:
         i = i+1
@@ -39,7 +44,7 @@ with open('image_hashes.txt', 'r') as file:
         md5hash = md5hash.hexdigest()
         if md5hash == image_entry[0]:
             ext = decrypted_image.format.lower() if decrypted_image.format else "png"
-            output_path = f"./Decrypted Images/image{i}.{ext}"
+            output_path = f"{RESULT_DIR}/image{i}.{ext}"
             decrypted_image.save(output_path, format=decrypted_image.format)
         else:
             continue # TODO: send over transmission error
