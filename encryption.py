@@ -12,40 +12,41 @@ from Crypto.Util.Padding import pad # pad function
 SOURCE_DIR = "./sample-images" # where the images are to be found
 KEY_FILE = "./key.txt" # where the key is stored
 RESULT_FILE = "./image_hashes.txt" # where the results are stored, list of strings [md5, ciphertext, tag, nonce]
-image_md5s = []
-
-# -- Create md5 hashes for every image and pair them together in a list by [filename, md5]
-for file in os.listdir(SOURCE_DIR):
-    if file.endswith('.png'):
-        image = Image.open(f"{SOURCE_DIR}/{file}")
-        md5hash = hashlib.md5(image.tobytes())
-        md5hash = md5hash.hexdigest()
-        image_md5s.append([file, image, md5hash]) # file path, image, md5hash
-        continue
-    else:
-        print("File "+file+" is not a .png")
-        continue
-
-# -- INITIAL encryption of these images using AES, making sure they remained paired with their MD5 checksums
 image_hashes = []
-# Fetch key from file, set up cipher
+
+# -- Fetch key from file
 with open(KEY_FILE, 'r') as file:
     key_line = file.readline().strip()
     key = bytes.fromhex(key_line)
-# for each image, encrypt it, and add to image_hashes list WITH the previously generated md5
-# AES-128 EAX encryption was made with reference to pycryptodome documentation: 
-# https://pycryptodome.readthedocs.io/en/latest/src/cipher/aes.html
-for image_entry in image_md5s:
-    cipher = AES.new(key, AES.MODE_EAX)
-    nonce = cipher.nonce
-    image_byte_array = io.BytesIO()
-    image_entry[1].save(image_byte_array, format=image_entry[1].format)
-    image_bytes = image_byte_array.getvalue()
-    image_bytes_string = b64encode(image_bytes)
-    ciphertext, tag = cipher.encrypt_and_digest(image_bytes_string)
-    # store result as strings for transmission, append that list to the md5
-    result = [b64encode(ciphertext).decode('utf-8'), b64encode(tag).decode('utf-8'), b64encode(nonce).decode('utf-8')]
-    image_hashes.append([image_entry[2], result]) # [md5hash, ciphertext, tag, nonce]
+
+# -- Iterate through each file in the source directory.
+# -- Check if file is image to confirm it is an expected png image file.
+#    -- If verified, preform the md5 generation + encryption
+for file in os.listdir(SOURCE_DIR):
+    if file.endswith('.png'):
+        # -- Create md5 hashes for every image and pair them together in a list by [filename, md5]
+        image = Image.open(f"{SOURCE_DIR}/{file}")
+        md5hash = hashlib.md5(image.tobytes())
+        md5hash = md5hash.hexdigest()
+        # -- for each image, encrypt it, and add to image_hashes list WITH the previously generated md5
+        #    -- AES-128 EAX encryption was made with reference to pycryptodome documentation: 
+        #    -- https://pycryptodome.readthedocs.io/en/latest/src/cipher/aes.html
+        cipher = AES.new(key, AES.MODE_EAX)
+        nonce = cipher.nonce
+        # turn image into bytes string, encrypt
+        image_byte_array = io.BytesIO()
+        image.save(image_byte_array, format=image.format)
+        image_bytes = image_byte_array.getvalue()
+        image_bytes_string = b64encode(image_bytes)
+        ciphertext, tag = cipher.encrypt_and_digest(image_bytes_string)
+        # store result as strings for transmission, append that list to the md5
+        result = [b64encode(ciphertext).decode('utf-8'), b64encode(tag).decode('utf-8'), b64encode(nonce).decode('utf-8')]
+        image_hashes.append([md5hash, result]) # [md5hash, ciphertext, tag, nonce]
+        continue
+    else:
+        # the file to encrypt was not the expected format
+        print("File "+file+" is not a .png")
+        continue
 
 # -- Add md5hash & the result triad to a separate text file which will be worked with for the data transfer
 with open(RESULT_FILE, 'w') as file:
