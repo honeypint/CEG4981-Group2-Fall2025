@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import filedialog #pop up window imports
 import cv2
 import os       #opencv imports
+import numpy as np
 
 root = tk.Tk()
 root.withdraw()
@@ -19,8 +20,23 @@ if file_paths:
     if save_folder:
         for i, file_path in enumerate(selected_images):
             img = cv2.imread(file_path)
+
+            hsv = cv2.cvtColor(selected_images, cv2.COLOR_BGR2HSV)                     #converts an image or a set of images from the BGR (Blue, Green, Red) 
+            lowerB1 = np.array([0, 100, 100])                                           #color space to the HSV (Hue, Saturation, Value) color space
+            upperB1 = np.array([10, 255, 255])
+            lowerB2 = np.array([160, 100, 100])                                           #color space to the HSV (Hue, Saturation, Value) color space
+            upperB2 = np.array([180, 255, 255])
+            
+            maskB1 = cv2.inRange(hsv, lowerB1, upperB1)
+            maskB2 = cv2.inRange(hsv, lowerB2, upperB2)
+            Cmask = cv2.bitwise_or(maskB1, maskB2)                                      #combined masks
+
+            apply = cv2.bitwise_and(selected_images, )
+
+
+
             if img is not None:
-                filename = f"Cropped-image-{i+1}.png"                           #renames images so you know they are cropped
+                filename = f"Cropped-Image-{i+1}.png"                           #renames images so you know they are cropped
                 save_path = os.path.join(save_folder, filename)
 
                 cv2.imwrite(save_path, img)
