@@ -1,6 +1,7 @@
 import hashlib # hashlib for MD5
-import os # used for file iteration
+import os # used for file creation/iteration
 import io # Used for converting image to bytes
+import sys # Used to exit code on fail
 
 from base64 import b64encode # b64encode function
 from PIL import Image # Python Imaging Library
@@ -11,8 +12,13 @@ from Crypto.Util.Padding import pad # pad function
 # TODO: EDIT TO WHAT IS NEEDED
 SOURCE_DIR = "./sample-images" # where the images are to be found
 KEY_FILE = "./key.txt" # where the key is stored
-RESULT_FILE = "./image_hashes.txt" # where the results are stored, list of strings [md5, ciphertext, tag, nonce]
-image_hashes = []
+RESULT_DIR = "./Encrypted Images" # where the results are stored, list of strings [md5, ciphertext, tag, nonce]
+os.makedirs(RESULT_DIR, exist_ok=True)
+
+# -- Check if the above files exist; if not, end program immediately
+if not os.path.exists(SOURCE_DIR) or not os.path.exists(KEY_FILE):
+    print ("ERROR: Required file not detected, ending program!")
+    sys.exit()
 
 # -- Fetch key from file
 with open(KEY_FILE, 'r') as file:
@@ -24,6 +30,7 @@ with open(KEY_FILE, 'r') as file:
 #    -- If verified, preform the md5 generation + encryption
 for file in os.listdir(SOURCE_DIR):
     if file.endswith('.png'):
+        filename = os.path.basename(file).replace(".png", "")
         # -- Create md5 hashes for every image and pair them together in a list by [filename, md5]
         image = Image.open(f"{SOURCE_DIR}/{file}")
         md5hash = hashlib.md5(image.tobytes())
@@ -41,17 +48,12 @@ for file in os.listdir(SOURCE_DIR):
         ciphertext, tag = cipher.encrypt_and_digest(image_bytes_string)
         # store result as strings for transmission, append that list to the md5
         result = [b64encode(ciphertext).decode('utf-8'), b64encode(tag).decode('utf-8'), b64encode(nonce).decode('utf-8')]
-        image_hashes.append([md5hash, result]) # [md5hash, ciphertext, tag, nonce]
+        with open(f"{RESULT_DIR}/{filename}.txt", 'w') as file_wr:
+            file_wr.write(md5hash+" ")
+            for item in result:
+                file_wr.write(item+" ")
         continue
     else:
         # the file to encrypt was not the expected format
         print("File "+file+" is not a .png")
         continue
-
-# -- Add md5hash & the result triad to a separate text file which will be worked with for the data transfer
-with open(RESULT_FILE, 'w') as file:
-    for image in image_hashes:
-        file.write(image[0]+" ")
-        for item in image[1]:
-            file.write(item+" ")
-        file.write("\n")
