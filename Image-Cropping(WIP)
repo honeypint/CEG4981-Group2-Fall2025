@@ -1,0 +1,38 @@
+import tkinter as tk
+from tkinter import filedialog
+import cv2
+import os
+
+# Hide the main Tkinter window
+root = tk.Tk()
+root.withdraw()
+
+# Select up to 10 images
+file_paths = filedialog.askopenfilenames(
+    title="Select your images (up to 10)",
+    filetypes=[("Image Files", "*.jpg *.jpeg *.png *.bmp *.gif")]
+)
+
+if file_paths:
+    selected_images = file_paths[:10]
+
+    # Ask for destination folder
+    save_folder = filedialog.askdirectory(title="Select a folder to save images")
+
+    if save_folder:
+        for i, file_path in enumerate(selected_images):
+            img = cv2.imread(file_path)
+            if img is not None:
+                # Create a new filename
+                filename = f"image_{i+1}.jpg"
+                save_path = os.path.join(save_folder, filename)
+
+                # Save image
+                cv2.imwrite(save_path, img)
+                print(f"Saved: {save_path}")
+            else:
+                print(f"Error: Could not load image from {file_path}")
+    else:
+        print("No folder selected. Images not saved.")
+else:
+    print("No images selected.")
