@@ -9,9 +9,9 @@ from Crypto.Cipher import AES # pycrypto AES-128
 from Crypto.Random import get_random_bytes # random bytes
 from Crypto.Util.Padding import pad # pad function
 
-SOURCE_DIR = "./Encrypted Images"
+SOURCE_DIR = "./Encrypted_Images"
 KEY_FILE = "./key.txt"
-RESULT_DIR = "./Decrypted Images"
+RESULT_DIR = "./Decrypted_Images"
 os.makedirs(RESULT_DIR, exist_ok=True)
 
 # -- Check if the above files exist; if not, end program immediately
@@ -40,7 +40,7 @@ for file in os.listdir(SOURCE_DIR):
     image_data = b64decode(cipher.decrypt(ciphertext))
     try:
         cipher.verify(tag)
-        print("Ciphertext decrypted correctly.")
+        print("Image decrypted correctly.")
     except ValueError:
         print("**ERROR**: Incorrect key or corrupted message!")
         continue # TODO: send over transmission error

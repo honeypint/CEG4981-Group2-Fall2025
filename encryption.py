@@ -12,7 +12,7 @@ from Crypto.Util.Padding import pad # pad function
 # TODO: EDIT TO WHAT IS NEEDED
 SOURCE_DIR = "./sample-images" # where the images are to be found
 KEY_FILE = "./key.txt" # where the key is stored
-RESULT_DIR = "./Encrypted Images" # where the results are stored, list of strings [md5, ciphertext, tag, nonce]
+RESULT_DIR = "./Encrypted_Images" # where the results are stored, list of strings [md5, ciphertext, tag, nonce]
 os.makedirs(RESULT_DIR, exist_ok=True)
 
 # -- Check if the above files exist; if not, end program immediately
@@ -52,6 +52,7 @@ for file in os.listdir(SOURCE_DIR):
             file_wr.write(md5hash+" ")
             for item in result:
                 file_wr.write(item+" ")
+        print("Image encrypted correctly.")
         continue
     else:
         # the file to encrypt was not the expected format
