@@ -40,7 +40,6 @@ for file in os.listdir(SOURCE_DIR):
     image_data = b64decode(cipher.decrypt(ciphertext))
     try:
         cipher.verify(tag)
-        print("Image decrypted correctly.")
     except ValueError:
         print("**ERROR**: Incorrect key or corrupted message!")
         continue # TODO: send over transmission error
@@ -51,6 +50,7 @@ for file in os.listdir(SOURCE_DIR):
     md5hash = hashlib.md5(decrypted_image.tobytes())
     md5hash = md5hash.hexdigest()
     if md5hash == image_entry[0]:
+        print("Image decrypted correctly.") # md5's match
         ext = decrypted_image.format.lower() if decrypted_image.format else "png"
         output_path = f"{RESULT_DIR}/{filename}.{ext}"
         decrypted_image.save(output_path, format=decrypted_image.format)
