@@ -6,7 +6,6 @@ import sys # Used to exit code on fail
 from base64 import b64decode # b64decode function
 from PIL import Image # Python Imaging Library
 from Crypto.Cipher import AES # pycrypto AES-128
-from Crypto.Random import get_random_bytes # random bytes
 from Crypto.Util.Padding import pad # pad function
 
 SOURCE_DIR = "./Encrypted_Images"
