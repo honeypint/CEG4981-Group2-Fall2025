@@ -56,3 +56,9 @@ for file in os.listdir(SOURCE_DIR):
         decrypted_image.save(output_path, format=decrypted_image.format)
     else:
         continue # TODO: send over transmission error
+# -- Decryption process fully completed, send over to cropping program IF program file exists
+CROPPING_PROGRAM = "./Image-Cropping.py"
+if os.path.exists(CROPPING_PROGRAM):
+    os.system(f'python {CROPPING_PROGRAM}')
+else:
+    print(f'ERROR: {CROPPING_PROGRAM} does not exist! Stopping at Decryption step.')
