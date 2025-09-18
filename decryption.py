@@ -29,6 +29,7 @@ with open(KEY_FILE, 'r') as file:
 i = 0
 for file in os.listdir(SOURCE_DIR):
     filename = os.path.basename(file).replace(".txt", "")
+
     # -- Fetch data needed for encryption from each file. Format per line is md5hash, ciphertext, tag, nonce
     with open(f"{SOURCE_DIR}/{file}") as readfile:
         image_entry = readfile.read().split()
@@ -36,6 +37,7 @@ for file in os.listdir(SOURCE_DIR):
     tag = b64decode(image_entry[2])
     nonce = b64decode(image_entry[3])
     cipher = AES.new(key, AES.MODE_EAX, nonce=nonce)
+
     # -- Decrypt ciphertext & convert image to proper format. Verify if the ciphertext is legitimate.
     image_data = b64decode(cipher.decrypt(ciphertext))
     try:
@@ -43,9 +45,10 @@ for file in os.listdir(SOURCE_DIR):
     except ValueError:
         print("**ERROR**: Incorrect key or corrupted message!")
         continue # TODO: send over transmission error
-        # -- Create new md5 checksum, compare the two to ensure no data loss occurred.
-        #    -- If success: add the image to the Decrypted Images folder
-        #    -- If fail: send a transmission error for resending
+
+    # -- Create new md5 checksum, compare the two to ensure no data loss occurred.
+    #    -- If success: add the image to the Decrypted Images folder
+    #    -- If fail: send a transmission error for resending
     decrypted_image = Image.open(io.BytesIO(image_data))
     md5hash = hashlib.md5(decrypted_image.tobytes())
     md5hash = md5hash.hexdigest()
@@ -56,9 +59,10 @@ for file in os.listdir(SOURCE_DIR):
         decrypted_image.save(output_path, format=decrypted_image.format)
     else:
         continue # TODO: send over transmission error
+    
 # -- Decryption process fully completed, send over to cropping program IF program file exists
 CROPPING_PROGRAM = "./Image-Cropping.py"
 if os.path.exists(CROPPING_PROGRAM):
     os.system(f'python {CROPPING_PROGRAM}')
 else:
-    print(f'ERROR: {CROPPING_PROGRAM} does not exist! Stopping at Decryption step.')
+    print(f'ERROR: {CROPPING_PROGRAM} does not exist! Stopping after Decryption step.')
