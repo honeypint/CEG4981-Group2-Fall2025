@@ -7,7 +7,7 @@ import numpy as np
 root = tk.Tk()
 root.withdraw()
 
-file_paths = filedialog.askopenfilenames(               #prompts user to pick 10 deathstar images, and opens file explorer
+file_paths = filedialog.askopenfilenames(               #prompts user to pick images, and opens file explorer
         title="Select 10 deathstar images",
         filetypes=[("Image Files", "*.jpg *.jpeg *.png *.bmp *.gif")]   
 )
@@ -51,11 +51,17 @@ if file_paths:
                         masked_img = cv2.bitwise_and(img, img, mask=mask)
 
                         x1, y1 = max(0, x-r), max(0, y-r)
-                        x2, y2 = min(img.shape[1], x+r), min(img.shape[0], y+r)         #cropping around red circle
+                        x2, y2 = min(img.shape[1], x+r), min(img.shape[0], y+r)             #cropping around red circle
                         cropped = masked_img[y1:y2, x1:x2]
 
-                        save_path = os.path.join(save_folder, f"cropped{i+1}.png")       #saving cropped image with new name
-                        cv2.imwrite(save_path, cropped)
+                        bgr_with_alpha = cv2.cvtColor(cropped, cv2.COLOR_BGR2BGRA)
+
+                        mask_cropped = mask[y1:y2, x1:x2]
+
+                        bgr_with_alpha[:, :, 3] = mask_cropped
+
+                        save_path = os.path.join(save_folder, f"cropped{i+1}.png")
+                        cv2.imwrite(save_path, bgr_with_alpha)
                 else:
                     print(f"[WARN] No red circles found in {file_path}")                #debug log
 
