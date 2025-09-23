@@ -53,9 +53,9 @@ for file in os.listdir(SOURCE_DIR):
             file_wr.write(md5hash+" ")
             for item in result:
                 file_wr.write(item+" ")
-        print("Image encrypted correctly.")
+        print(f"Image {filename}.png encrypted correctly.")
         continue
     else:
         # the file to encrypt was not the expected format
-        print("File "+file+" is not a .png")
+        print(f"File {filename} is not a .png")
         continue

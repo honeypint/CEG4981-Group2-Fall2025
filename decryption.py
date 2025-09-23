@@ -52,11 +52,12 @@ for file in os.listdir(SOURCE_DIR):
     md5hash = hashlib.md5(decrypted_image.tobytes())
     md5hash = md5hash.hexdigest()
     if md5hash == image_entry[0]:
-        print("Image decrypted correctly.") # md5's match
+        print(f"Image {filename}.txt decrypted correctly.") # md5's match
         ext = decrypted_image.format.lower() if decrypted_image.format else "png"
         output_path = f"{RESULT_DIR}/{filename}.{ext}"
         decrypted_image.save(output_path, format=decrypted_image.format)
     else:
+        print(f"**ERROR**: Checksums do not match for {filename}.{ext}") # md5's do not match
         continue # TODO: send over transmission error
     
 # -- Decryption process fully completed, send over to cropping program IF program file exists

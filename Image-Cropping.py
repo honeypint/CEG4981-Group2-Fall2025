@@ -66,7 +66,7 @@ if file_paths:
                         bgr_with_alpha[:, :, 3] = mask_cropped
 
                         save_path = os.path.join(save_folder, f"cropped{i+1}.png")
-                        print("Image cropped.")
+                        print(f"Image cropped{i+1}.png cropped.")
                         cv2.imwrite(save_path, bgr_with_alpha)
                 else:
                     print(f"[WARN] No red circles found in {file_path}")                #debug log
