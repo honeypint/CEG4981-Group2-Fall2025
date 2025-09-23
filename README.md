@@ -1,4 +1,10 @@
 # Senior Design II (CEG4981) | Fall 2025 | Group 2's Project Repository
+### Team Members
+- Ben Hawk (Computer Engineering) - `hawk.38@wright.edu`
+- Zachary Kramer (Electrical Engineering) - `kramer.129@wright.edu`
+- Kyle Cox (Computer Science) - `cox.362@wright.edu`
+- Ryan Shanley (IT & Cyber) - `shanley.4@wright.edu`
+
 ### Problem Statement
 Ever since their takeover, the Empire’s rule has led to extensive amounts of death and destruction. Most of this destruction was accomplished by their huge, powerful weapon, the Death Star. Issues will begin to rise in the Galaxy if this tyrannic rule continues.
 Taking down this weapon not only would prevent destruction but would also be the first step in retaking control of the Galaxy. Within the Death Star contains vulnerability plans which can be used to disable the weapon, but they need to be obtained in a way that is both hasty and covert.
