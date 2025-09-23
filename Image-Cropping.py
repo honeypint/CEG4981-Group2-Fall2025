@@ -1,17 +1,24 @@
 import cv2
 import os                                                #opencv imports
 import numpy as np
+import sys
 
 folder_path = f"./Decrypted_Images"
 save_folder = f"./Cropped_Images"
 os.makedirs(save_folder, exist_ok=True)
 
+# Check if the above decrypted images file exists; if not, end program immediately
+if not os.path.exists(folder_path):
+    print ("ERROR: Required file not detected, ending cropping program!")
+    sys.exit()
+
+# Grab all images in Decrypted_Images folder
 file_paths = [
     os.path.join(folder_path, f) for f in os.listdir(folder_path)
     if f.lower().endswith((".jpg", ".jpeg", ".png", ".bmp", ".gif"))
 ]
-                                                    #grabs all images in Decrypted Images folder
 
+# Iterate through and crop out the red circles, save to Cropped_Images
 if file_paths:                                  
     selected_images = file_paths[:10]           
 
