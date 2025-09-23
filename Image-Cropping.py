@@ -9,7 +9,7 @@ os.makedirs(save_folder, exist_ok=True)
 
 # Check if the above decrypted images file exists; if not, end program immediately
 if not os.path.exists(folder_path):
-    print ("ERROR: Required file not detected, ending cropping program!")
+    print("ERROR: Required file not detected, ending cropping program!")
     sys.exit()
 
 # Grab all images in Decrypted_Images folder

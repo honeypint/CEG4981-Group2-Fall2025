@@ -16,7 +16,7 @@ os.makedirs(RESULT_DIR, exist_ok=True)
 
 # -- Check if the above files exist; if not, end program immediately
 if not os.path.exists(SOURCE_DIR) or not os.path.exists(KEY_FILE):
-    print ("ERROR: Required file not detected, ending encryption program!")
+    print("ERROR: Required file not detected, ending encryption program!")
     sys.exit()
 
 # -- Fetch key from file
