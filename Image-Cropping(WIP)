@@ -1,21 +1,19 @@
-import tkinter as tk
-from tkinter import filedialog                             #pop up window imports
 import cv2
 import os                                                #opencv imports
 import numpy as np
 
-root = tk.Tk()
-root.withdraw()
+folder_path = r"C:\Users\Shanl\OneDrive\Desktop\Decrypted Images"
+save_folder = os.path.join(folder_path, "Cropped Images")
+os.makedirs(save_folder, exist_ok=True)
 
-file_paths = filedialog.askopenfilenames(               #prompts user to pick images, and opens file explorer
-        title="Select 10 deathstar images",
-        filetypes=[("Image Files", "*.jpg *.jpeg *.png *.bmp *.gif")]   
-)
+file_paths = [
+    os.path.join(folder_path, f) for f in os.listdir(folder_path)
+    if f.lower().endswith((".jpg", ".jpeg", ".png", ".bmp", ".gif"))
+]
+                                                    #grabs all images in Decrypted Images folder
 
 if file_paths:                                  
     selected_images = file_paths[:10]           
-
-    save_folder = filedialog.askdirectory(title="Select a folder to save images")       #prompts for user to pick a folder to save too
 
     if save_folder:
         for i, file_path in enumerate(selected_images):
@@ -64,5 +62,4 @@ if file_paths:
                         cv2.imwrite(save_path, bgr_with_alpha)
                 else:
                     print(f"[WARN] No red circles found in {file_path}")                #debug log
-
 
