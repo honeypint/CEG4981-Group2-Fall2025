@@ -2,8 +2,8 @@ import cv2
 import os                                                #opencv imports
 import numpy as np
 
-folder_path = r"C:\Users\Shanl\OneDrive\Desktop\Decrypted Images"
-save_folder = os.path.join(folder_path, "Cropped Images")
+folder_path = f"./Decrypted_Images"
+save_folder = f"./Cropped_Images"
 os.makedirs(save_folder, exist_ok=True)
 
 file_paths = [
@@ -59,6 +59,7 @@ if file_paths:
                         bgr_with_alpha[:, :, 3] = mask_cropped
 
                         save_path = os.path.join(save_folder, f"cropped{i+1}.png")
+                        print("Image cropped.")
                         cv2.imwrite(save_path, bgr_with_alpha)
                 else:
                     print(f"[WARN] No red circles found in {file_path}")                #debug log
