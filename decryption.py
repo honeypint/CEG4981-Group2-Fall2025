@@ -27,7 +27,7 @@ with open(KEY_FILE, 'r') as file:
 # -- Iterate through the hashes file, process each image individually
 i = 0
 for file in os.listdir(SOURCE_DIR):
-    filename = os.path.basename(file).replace(".txt", "")
+    filename = os.path.basename(file).replace(".bin", "")
 
     # -- Fetch data needed for encryption from each file. Format per line is md5hash, ciphertext, tag, nonce
     with open(f"{SOURCE_DIR}/{file}") as readfile:
@@ -52,7 +52,7 @@ for file in os.listdir(SOURCE_DIR):
     md5hash = hashlib.md5(decrypted_image.tobytes())
     md5hash = md5hash.hexdigest()
     if md5hash == image_entry[0]:
-        print(f"Image {filename}.txt decrypted correctly.") # md5's match
+        print(f"Image {filename}.bin decrypted correctly.") # md5's match
         ext = decrypted_image.format.lower() if decrypted_image.format else "png"
         output_path = f"{RESULT_DIR}/{filename}.{ext}"
         decrypted_image.save(output_path, format=decrypted_image.format)

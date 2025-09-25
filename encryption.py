@@ -49,7 +49,7 @@ for file in os.listdir(SOURCE_DIR):
         ciphertext, tag = cipher.encrypt_and_digest(image_bytes_string)
         # store result as strings in a file individually for transmission, append that list to the md5
         result = [b64encode(ciphertext).decode('utf-8'), b64encode(tag).decode('utf-8'), b64encode(nonce).decode('utf-8')]
-        with open(f"{RESULT_DIR}/{filename}.txt", 'w') as file_wr:
+        with open(f"{RESULT_DIR}/{filename}.bin", 'w') as file_wr:
             file_wr.write(md5hash+" ")
             for item in result:
                 file_wr.write(item+" ")
