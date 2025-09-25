@@ -1,5 +1,5 @@
 import cv2
-import os                                                #opencv imports
+import os                                             
 import numpy as np
 import sys
 
@@ -27,20 +27,20 @@ if file_paths:
             img = cv2.imread(file_path)
 
             if img is not None:
-                
-                hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)                  #Changes to hsv color pallete
-
+                #Changes to hsv color pallete
+                hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)                  
+                #Sets what color red to look for
                 lower_red1 = np.array([0, 100, 100])
                 upper_red1 = np.array([10, 255, 255])
                 lower_red2 = np.array([170, 100, 100])
-                upper_red2 = np.array([180, 255, 255])                  #Sets what color red to look for
-
+                upper_red2 = np.array([180, 255, 255])                  
+                 #mask for red arrays
                 mask1 = cv2.inRange(hsv, lower_red1, upper_red1)
-                mask2 = cv2.inRange(hsv, lower_red2, upper_red2)        #mask for red arrays
+                mask2 = cv2.inRange(hsv, lower_red2, upper_red2)       
                 red_mask = cv2.bitwise_or(mask1, mask2)
 
                 gray = cv2.GaussianBlur(red_mask, (9, 9), 2)
-
+                #Parameter for red (actually gray) circles, change this code and below if needed to look for ovals
                 circles = cv2.HoughCircles(
                     gray, cv2.HOUGH_GRADIENT, dp=1.0, minDist=50,
                     param1=100, param2=15, minRadius=10, maxRadius=0
@@ -54,9 +54,9 @@ if file_paths:
                         cv2.circle(mask, (x, y), r, 255, -1)
 
                         masked_img = cv2.bitwise_and(img, img, mask=mask)
-
+                        #cropping around red circle
                         x1, y1 = max(0, x-r), max(0, y-r)
-                        x2, y2 = min(img.shape[1], x+r), min(img.shape[0], y+r)             #cropping around red circle
+                        x2, y2 = min(img.shape[1], x+r), min(img.shape[0], y+r)             
                         cropped = masked_img[y1:y2, x1:x2]
 
                         bgr_with_alpha = cv2.cvtColor(cropped, cv2.COLOR_BGR2BGRA)
@@ -69,5 +69,6 @@ if file_paths:
                         print(f"Image cropped{i+1}.png cropped.")
                         cv2.imwrite(save_path, bgr_with_alpha)
                 else:
-                    print(f"[WARN] No red circles found in {file_path}")                #debug log
+                     #debug log
+                    print(f"[WARN] No red circles found in {file_path}")               
 
