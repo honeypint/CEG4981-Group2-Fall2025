@@ -63,6 +63,6 @@ for file in os.listdir(SOURCE_DIR):
 # -- Decryption process fully completed, send over to cropping program IF program file exists
 CROPPING_PROGRAM = "./Image-Cropping.py"
 if os.path.exists(CROPPING_PROGRAM):
-    os.system(f'python3 {CROPPING_PROGRAM}')
+    os.system(f'python {CROPPING_PROGRAM}')
 else:
     print(f'ERROR: {CROPPING_PROGRAM} does not exist! Stopping after Decryption step.')

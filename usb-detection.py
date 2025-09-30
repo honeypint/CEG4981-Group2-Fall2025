@@ -21,6 +21,6 @@ if os.path.isdir(f'/media/{USERNAME}'): # check if media folder exists first
     # -- Decryption process fully completed, send over to cropping program IF program file exists
     ENCRYPTION_PROGRAM = "./encryption.py"
     if os.path.exists(ENCRYPTION_PROGRAM):
-        os.system(f'python3 {ENCRYPTION_PROGRAM}')
+        os.system(f'python {ENCRYPTION_PROGRAM}')
     else:
         print(f'ERROR: {ENCRYPTION_PROGRAM} does not exist! Stopping after Decryption step.')
