@@ -8,7 +8,7 @@ from PIL import Image # Python Imaging Library
 from Crypto.Cipher import AES # pycrypto AES-128
 from Crypto.Util.Padding import pad # pad function
 
-SOURCE_DIR = "./Encrypted_Images"
+SOURCE_DIR = "./Encrypted_Images" # TODO: file path should change depending on transmission folder name, probably
 KEY_FILE = "./key.txt"
 RESULT_DIR = "./Decrypted_Images"
 os.makedirs(RESULT_DIR, exist_ok=True)
