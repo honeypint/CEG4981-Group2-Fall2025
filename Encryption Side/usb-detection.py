@@ -8,14 +8,15 @@ import shutil # file copying
 
 # -- Code that runs on a USB file input, checks every folder, and grabs JPG files.
 USERNAME = "Group2"
-os.makedirs("./sample-images", exist_ok=True)
+IMAGES_FOLDER = "./sample-images"
+os.makedirs(IMAGES_FOLDER, exist_ok=True)
 if os.path.isdir(f'/media/{USERNAME}'): # check if media folder exists first
     for filename in os.listdir(f'/media/{USERNAME}'): # get every file/folder in user's media folder
         file_path = f'/media/{USERNAME}/{filename}'
-        if os.path.isdir(file_path): # if directory for usb - search it, grab all jpg files
+        if os.access(file_path, os.R_OK) and os.path.isdir(file_path): # if directory for usb - search it, grab all jpg files
             for file in os.listdir(file_path): 
                 if file.endswith(".png"):
-                    shutil.copy(os.path.join(file_path, file), f'./sample-images') # copy to sample-images folder .
+                    shutil.copy(os.path.join(file_path, file), f'{IMAGES_FOLDER}') # copy to sample-images folder .
                     print(f'File {file} copied successfully!')
 
     # -- Decryption process fully completed, send over to cropping program IF program file exists
