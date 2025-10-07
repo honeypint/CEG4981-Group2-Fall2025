@@ -3,12 +3,12 @@ import shutil # file copying
 
 # To think about:
 # /etc/udev/rules.d
-# ACTION=="add", SUBSYSTEM=="usb", RUN+="/home/kcox/CEG4981/usbprogram.py"
+# ACTION=="add", SUBSYSTEM=="usb", RUN+="/home/Group2/usb-detection.py"
 # ACTION=="remove", SUBSYSTEM=="usb", PROGRAM="<full_path_here>/on_usb_out.sh"
 
 # -- Code that runs on a USB file input, checks every folder, and grabs JPG files.
 USERNAME = "Group2"
-IMAGES_FOLDER = "./sample-images"
+IMAGES_FOLDER = "./runImages"
 os.makedirs(IMAGES_FOLDER, exist_ok=True)
 if os.path.isdir(f'/media/{USERNAME}'): # check if media folder exists first
     for filename in os.listdir(f'/media/{USERNAME}'): # get every file/folder in user's media folder
