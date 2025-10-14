@@ -34,8 +34,8 @@ while loop:
         print("Searching for a USB entry with PNG files in them...")
     time.sleep(5)
 # -- Decryption process fully completed, send over to cropping program IF program file exists
-ENCRYPTION_PROGRAM = "./encryption.py"
-if os.path.exists(ENCRYPTION_PROGRAM):
-    os.system(f'python {ENCRYPTION_PROGRAM}')
+RECOGNITION_PROGRAM = "./yolorun.py"
+if os.path.exists(RECOGNITION_PROGRAM):
+    os.system(f'python {RECOGNITION_PROGRAM}')
 else:
-    print(f'ERROR: {ENCRYPTION_PROGRAM} does not exist! Stopping after USB Detection step.')
+    print(f'ERROR: {RECOGNITION_PROGRAM} does not exist! Stopping after USB Detection step.')
