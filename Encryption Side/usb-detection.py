@@ -1,6 +1,7 @@
 import os # folder checking/management
 import shutil # file copying
 import time # for waiting
+import subprocess # for running the encryption program through the venv
 
 # To think about:
 # /etc/udev/rules.d
@@ -36,6 +37,10 @@ while loop:
 # -- Decryption process fully completed, send over to cropping program IF program file exists
 RECOGNITION_PROGRAM = "./yolorun.py"
 if os.path.exists(RECOGNITION_PROGRAM):
-    os.system(f'python {RECOGNITION_PROGRAM}')
+    try:
+        subprocess.run([f'/home/{USERNAME}/r24env/bin/python3', RECOGNITION_PROGRAM], check=True)
+        print("Moving to recognition program...")
+    except subprocess.CalledProcessError as e:
+        print(f'Error while running yolorun.py: {e}')
 else:
     print(f'ERROR: {RECOGNITION_PROGRAM} does not exist! Stopping after USB Detection step.')
