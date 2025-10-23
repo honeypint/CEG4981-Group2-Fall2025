@@ -1,0 +1,26 @@
+JPEG TEST
+
+1st Trial (100 images) = 35.14 seconds
+2nd Trial (100 images) = 35.36 seconds
+3rd Trial (100 images) = 35.52 seconds
+
+1st Trial (50 Images, no Weaknesses) = 16.96 seconds
+2nd Trial (50 Images, no Weaknesses) = 16.58 seconds
+3rd Trial (50 Images, no Weaknesses) = 16.30 seconds
+
+1st Trial (100 Images, no Weaknesses) = 31.18 seconds
+2nd Trial (100 Images, no Weaknesses) = 31.033 seconds
+3rd Trial (100 Images, no Weaknesses) = 31.24 seconds
+
+1st Trial (150 Images) = 49.71 seconds
+2nd Trial (150 Images) = 49.14 seconds
+3rd Trial (150 Images) = 49.19 seconds
+
+PNG TEST
+
+1st Trial (150 Images) = 54.05 seconds
+2nd Trial (150 Images) = 49.03 seconds
+3rd Trial (150 Images) = 54.41 seconds
+
+GPU TEST 
+1st Trial (150 Images) = 13.91 seconds
