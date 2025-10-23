@@ -1,4 +1,3 @@
-```
 import hashlib # hashlib for MD5
 import os # used for file creation/iteration
 import io # Used for converting image to bytes
@@ -89,5 +88,3 @@ def run_flask():
 
 if __name__ == "__main__":
     threading.Thread(target=run_flask).start()
-
-```
