@@ -17,7 +17,7 @@ Use a non-standard communication method, specifically radio frequency transmissi
 ### Encryption & Transmitting Side
 - **USB Insert Processing**: Copying .png images from a USB drive automatically once it is inserted. (Relevant File: `usb-detection.py`) 
 - **Image Identification**: Training the Yolo-V8 image identification program to specifically detect images that contain the Death Star with a red vulnerability circle on them. Any detected images will be thrown into a folder as verified vulnerability images. (Relevant File: `yolorun.py`)
-- **Image Cropping** Cropping the images utilizing the Yolo-V8 image identification program to specifically show the red circles, which indicate the vulnerability locations.
+- **Image Cropping**: Cropping the images utilizing the Yolo-V8 image identification program to specifically show the red circles, which indicate the vulnerability locations.
 - **Encryption and MD5 Checksum generation**: Using Python, taking each image in a provided folder from the previous step, generating a MD5 checksum for the image via hashlib, and encrypting the image using the AES-128 encryption algorithm via pycryptodome. The encrypted image and the MD5 are paired together for transmission. (Relevant File: `encryption.py`)
 - **Transmitting via NRF24L01**: Transmitting each image binary file over using the NRF24L01 radio transmitter connected to the Raspberry Pi. This is run through a Python script, using the RF24 Python library. (Relevant File: `transmitter.py`)
 ### Decrypting & Receiving Side 
