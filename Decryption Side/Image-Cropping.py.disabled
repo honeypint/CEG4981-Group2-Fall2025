@@ -1,3 +1,6 @@
+# OLD CODE: This was originally used for the image cropping, 
+# but instead we now utilize the YoloV8 program to do this.
+
 import cv2
 import os                                             
 import numpy as np
