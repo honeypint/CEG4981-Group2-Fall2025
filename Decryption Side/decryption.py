@@ -13,8 +13,10 @@ import threading
 
 SOURCE_DIR = "./Encrypted_Images" # TODO: file path should change depending on other files!
 KEY_FILE = "./key.txt"
+CHECKSUMS_DIR = "./MD5Checksums"
 RESULT_DIR = "./Decrypted_Images"
 os.makedirs(RESULT_DIR, exist_ok=True)
+os.makedirs(CHECKSUMS_DIR, exist_ok=True)
 
 # -- Check if the above files exist; if not, end program immediately
 if not os.path.exists(SOURCE_DIR) or not os.path.exists(KEY_FILE):
@@ -51,18 +53,30 @@ for file in os.listdir(SOURCE_DIR):
     # -- Create new md5 checksum, compare the two to ensure no data loss occurred.
     #    -- If success: add the image to the Decrypted Images folder
     #    -- If fail: send a transmission error for resending
+    # -- In either case, print both md5's to a text file for demonstration purposes
     decrypted_image = Image.open(io.BytesIO(image_data))
     md5hash = hashlib.md5(decrypted_image.tobytes())
     md5hash = md5hash.hexdigest()
-    if md5hash == image_entry[0]:
-        print(f"Image {filename}.bin decrypted correctly.") # md5's match
+    if md5hash == image_entry[0]: # md5's match
+        # print md5's to a text file - success!
+        with open(f"{CHECKSUMS_DIR}/checksum{i}.txt", "w") as file:
+            file.write(f"Encryption Side: {md5hash}\n")
+            file.write(f"Decryption Side: {image_entry[0]}\n")
+            file.write(f"Image {filename}.bin decrypted correctly.")
+        print(f"Image {filename}.bin decrypted correctly.")
         ext = decrypted_image.format.lower() if decrypted_image.format else "png"
         output_path = f"{RESULT_DIR}/{filename}.{ext}"
         decrypted_image.save(output_path, format=decrypted_image.format)
-    else:
-        print(f"**ERROR**: Checksums do not match for {filename}.{ext}") # md5's do not match
+    else: # md5's do not match
+        # print md5's to a text file - fail!
+        with open(f"{CHECKSUMS_DIR}/checksum{i}.txt", "w") as file:
+            file.write(f"Encryption Side: {md5hash}\n")
+            file.write(f"Decryption Side: {image_entry[0]}\n")
+            file.write(f"**ERROR**: Checksums do not match for {filename}.{ext}")
+        print(f"**ERROR**: Checksums do not match for {filename}.{ext}")
         continue
-    
+    i = i+1
+   
 # -- Decryption process fully completed, open and send to Flask server
 app = Flask(__name__)
 CORS(app)
