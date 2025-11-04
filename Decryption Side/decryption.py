@@ -7,9 +7,6 @@ from base64 import b64decode # b64decode function
 from PIL import Image # Python Imaging Library
 from Crypto.Cipher import AES # pycrypto AES-128
 from Crypto.Util.Padding import pad # pad function
-from flask import Flask, send_from_directory, jsonify, request
-from flask_cors import CORS
-import threading
 
 SOURCE_DIR = "./Encrypted_Images" # TODO: file path should change depending on other files!
 KEY_FILE = "./key.txt"
@@ -76,23 +73,3 @@ for file in os.listdir(SOURCE_DIR):
         print(f"**ERROR**: Checksums do not match for {filename}.{ext}")
         continue
     i = i+1
-   
-# -- Decryption process fully completed, open and send to Flask server
-app = Flask(__name__)
-CORS(app)
-
-FOLDER_PATH = os.path.abspath(RESULT_DIR)
-
-@app.route("/files", methods=["GET"])
-def list_files():
-    return jsonify(os.listdir(FOLDER_PATH))
-
-@app.route("/files/<path:filename>", methods=["GET"])
-def serve_file(filename):
-    return send_from_directory(FOLDER_PATH, filename)
-
-def run_flask():
-    app.run(host="0.0.0.0", port=5000, debug=True)
-
-if __name__ == "__main__":
-    threading.Thread(target=run_flask).start()
