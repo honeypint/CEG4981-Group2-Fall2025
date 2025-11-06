@@ -1,0 +1,76 @@
+transmitter:
+[Unit]
+Description=Radio Transmitter Service
+After=network.target
+
+[Service]
+Type=simple
+User=Group2
+WorkingDirectory=/home/Group2
+
+# Clean up old files before starting
+ExecStartPre=/usr/bin/bash -c 'rm -f /home/Group2/encrypted_txt/*.bin /home/Group2/encrypted_txt/*.bin.sent /home/Group2/sent_hashes.txt'
+
+# Start the actual transmitter
+ExecStart=/usr/bin/python3 /home/Group2/transmitter.py
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+receiver:
+
+[Unit]
+Description=Radio Receiver Service
+After=network.target
+
+[Service]
+Type=simple
+User=Group2
+WorkingDirectory=/home/Group2
+
+# Clean up old files before starting
+ExecStartPre=/usr/bin/bash -c 'rm -f /home/Group2/received_txt/*.bin /home/Group2/decrypted_images/*.png /home/Group2/received_hashes.txt'
+
+# Start the actual receiver
+ExecStart=/usr/bin/python3 /home/Group2/receiver.py
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+usb-detection:
+
+[Unit]
+Description=USB Detection and Image Import
+After=multi-user.target
+
+[Service]
+Type=simple
+User=Group2
+WorkingDirectory=/home/Group2
+ExecStart=/usr/bin/python3 /home/Group2/usb-detection.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+flask_server.service
+[Unit]
+Description=Flask Server for Decrypted Images
+After=network.target
+
+[Service]
+Type=simple
+User=Group2
+WorkingDirectory=/home/Group2
+ExecStart=/home/Group2/rf24env/bin/python3 /home/Group2/flask_server.py
+Restart=always
+Environment="PATH=/home/Group2/rf24env/bin"
+
+[Install]
+WantedBy=multi-user.target
+
+
