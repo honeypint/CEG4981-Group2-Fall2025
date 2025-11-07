@@ -66,37 +66,35 @@ def main():
         eprint("Decryption/auth failed:", e)
         sys.exit(9)
 
-    # compute md5 of plaintext
-    md5_hash = hashlib.md5(plaintext).hexdigest()
+    # compute md5 of plaintext (informational — only useful if you had a pre-transmit md5)
+    plaintext_md5 = hashlib.md5(plaintext).hexdigest()
 
     # compute md5 of full container (what transmitter used for header)
     container_md5 = hashlib.md5(data).hexdigest()
 
-    outdir.mkdir(parents=True, exist_ok=True)
-    outpath = outdir / (infile.stem + ".png")
-    tmp = outpath.with_suffix(outpath.suffix + ".tmp")
+    # optional expected container md5 passed by receiver.py (hex string)
+    expected_md5 = None
+    if len(sys.argv) == 5:
+        expected_md5 = sys.argv[4].strip().lower()
 
-    try:
-        with open(tmp, "wb") as f:
-            f.write(plaintext)
-            f.flush()
-            os.fsync(f.fileno())
-        os.replace(tmp, outpath)
-    except Exception as e:
-        eprint("Write failed:", e)
-        sys.exit(10)
-
-    # compare hashes
-    md5_match = "MATCH" if md5_hash == md5_hash else "UNKNOWN"  # always match plaintext to itself
-    # But since transmitter md5 is on container, you can optionally compare plaintext vs container
+    # Decide MD5 status:
+    # - If expected_md5 provided: compare it to container_md5 -> authoritative result
+    # - Else: we cannot verify against header; mark as UNKNOWN but still log md5s
+    if expected_md5:
+        md5_status = "MATCH" if container_md5 == expected_md5 else "MISMATCH"
+    else:
+        md5_status = "UNKNOWN"  # decryption invoked without header md5 to compare to
 
     # write md5 log
     log_file = md5_log_dir / (infile.stem + ".txt")
     with open(log_file, "w") as f:
         f.write(f"File: {infile.name}\n")
-        f.write(f"Decrypted MD5: {md5_hash}\n")
-        f.write(f"Container MD5 (as sent): {container_md5}\n")
-        f.write(f"MD5 Status: {'MATCH' if md5_hash else 'FAIL'}\n")
+        f.write(f"Container MD5 (computed): {container_md5}\n")
+        if expected_md5:
+            f.write(f"Container MD5 (expected): {expected_md5}\n")
+        f.write(f"Plaintext MD5 (informational): {plaintext_md5}\n")
+        f.write(f"MD5 Status: {md5_status}\n")
+    
 
     print(f"Decrypted {infile.name} -> {outpath.name} | MD5 log: {log_file}", flush=True)
     sys.exit(0)
