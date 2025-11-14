@@ -4,7 +4,7 @@ receiver.py — Phase 2 reliable ARQ with selective retransmit
 Usage: python3 receiver.py --mode fast|robust
 """
 
-import time, struct, argparse, subprocess, hashlib
+import time, struct, argparse, subprocess, hashlib, os
 from pathlib import Path
 from RF24 import RF24, RF24_PA_HIGH, RF24_1MBPS
 try:
@@ -70,6 +70,15 @@ def main():
     args=ap.parse_args(); radio=init_radio(args.mode)
     RECV_DIR.mkdir(exist_ok=True); DECRYPT_DIR.mkdir(exist_ok=True)
 
+    # === IMAGE LIMIT SECTION ===
+    # Change this number to accept more or fewer images per session
+    MAX_IMAGES = 10  # <--- you can change this limit here
+    def can_accept_more_images():
+        files = [f for f in os.listdir(RECV_DIR)
+                 if f.lower().endswith(('.jpg', '.jpeg', '.png', '.bin'))]
+        return len(files) < MAX_IMAGES
+    # ===========================
+
     # track received hashes to avoid duplicates
     hashes_file = RECV_DIR / "received_hashes.txt"
     seen = set()
@@ -78,6 +87,13 @@ def main():
 
     last_hdr_msg = 0
     while True:
+        # --- check if image limit reached ---
+        if not can_accept_more_images():
+            print(f"[receiver] Image limit ({MAX_IMAGES}) reached — waiting for manual reset.", flush=True)
+            time.sleep(5)
+            continue
+        # ------------------------------------
+
         now = time.time()
         if now - last_hdr_msg > 10:
             print("[receiver] waiting for header...", flush=True)
@@ -139,7 +155,7 @@ def main():
                         print(f"[receiver] MD5 OK: {out.name}", flush=True)
                         send_status(radio, "OK")
                         try:
-                            subprocess.run([str(VENV_PY), str(DECRYPT_SCRIPT), str(out), str(DECRYPT_DIR), str(KEY_FILE)], check=False)
+                            subprocess.run([str(VENV_PY), str(DECRYPT_SCRIPT), str(out), str(DECRYPT_DIR), str(KEY_FILE), md5_expect], check=False)
                             print(f"[receiver] attempted decrypt -> {DECRYPT_DIR}", flush=True)
                         except Exception as e:
                             print("[receiver] decrypt error:", e, flush=True)
@@ -177,7 +193,7 @@ def main():
                         print(f"[receiver] MD5 OK: {out.name}", flush=True)
                         send_status(radio, "OK")
                         try:
-                            subprocess.run([str(VENV_PY), str(DECRYPT_SCRIPT), str(out), str(DECRYPT_DIR), str(KEY_FILE)], check=False)
+                            subprocess.run([str(VENV_PY), str(DECRYPT_SCRIPT), str(out), str(DECRYPT_DIR), str(KEY_FILE), md5_expect], check=False)
                             print(f"[receiver] attempted decrypt -> {DECRYPT_DIR}", flush=True)
                         except Exception as e:
                             print("[receiver] decrypt error:", e, flush=True)

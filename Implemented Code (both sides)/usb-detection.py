@@ -7,7 +7,7 @@ import subprocess
 USERNAME = "Group2"
 BASE = f"/home/{USERNAME}"
 IMAGES_FOLDER = f"{BASE}/runImages"
-YOLO_PROGRAM = f"{BASE}/yolorun.py"
+YOLO_PROGRAM = f"{BASE}/yolorun_ncnnwithexc.py"
 PYTHON_PATH = f"{BASE}/rf24env/bin/python3"  # path to your venv's python
 
 os.makedirs(IMAGES_FOLDER, exist_ok=True)
